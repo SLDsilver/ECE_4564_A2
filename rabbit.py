@@ -40,12 +40,11 @@ class Messenger:
         #Print out everything
         print("Place: ", str(method.exchange))
         print("Subject: ", str(method.routing_key))
-        print("Message: ", str(body))
+        print("Message: ", str(body.decode()))
 
     def consume(self):
         for key, value in self.queue_names.items():
             for q in value:
-                print(q)
                 self.channel.basic_consume(self.consume_callback,queue=str(q),no_ack=True)
         self.channel.start_consuming()
 
@@ -55,4 +54,5 @@ if __name__=="__main__":
 
     msg1.produce("Squires","Food","Im Hungry damnit")
     msg1.produce("Squires","Rooms","Embeddi boi")
+    msg1.produce("Goodwin","Classrooms","Diffeq HW Due?")
     msg2.consume()
