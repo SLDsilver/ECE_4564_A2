@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 import argparse as ap
-import rabbit
+import rabbit as rb
 
 class Repository:
     def __init__(self,silent=False):
         self.silent = silent
         self.tmp = "tmp"
-        self.messenger = Messenger()
+        self.messenger = rb.Messenger()
         self.messenger.consume()
 
 if __name__ == '__main__':
