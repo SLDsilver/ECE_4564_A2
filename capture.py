@@ -14,18 +14,19 @@ import time
 from gpiozero import LED
 from pymongo import MongoClient
 from captureKeys import *
-import rabbit
+import rabbit as rb
+import argparse as ap
 
 redLED = LED(17)
 greenLED = LED(27)
 blueLED = LED(22)
 
-class Capture:
-    def __init__(self,StreamListener,host='localhost',tag='#ECE4564T10',cp=False):
-        self.messenger = rb.Messenger(self.host)
+class Capture(StreamListener):
+    def __init__(self,host='localhost',tag='#ECE4564T10',cp=False):
+        StreamListener.__init__(self)
         self.host = "".join(host)
+        self.messenger = rb.Messenger(self.host)
         self.hashtag = tag
-        self.monitor() #initilize monitering
 
     def on_status(self, status):
         self.Action = ''
@@ -110,7 +111,7 @@ class Capture:
 
         return
 
-def monitor(listener):
+def monitor(listener,hashtag):
     l = listener
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -118,7 +119,7 @@ def monitor(listener):
 
     while True:
         try:
-            stream.filter(track=[self.hashtag])
+            stream.filter(track=[hashtag])
         except:
             continue
 
@@ -137,4 +138,4 @@ if __name__ == '__main__':
 
     capture = Capture(host=args.IP,tag=args.hashtag,cp=args.silent)
 
-    monitor(capture)
+    monitor(capture,args.hashtag)
