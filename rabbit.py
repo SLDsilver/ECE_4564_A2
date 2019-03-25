@@ -41,12 +41,17 @@ class Messenger:
 
     def consume_callback(self, ch, method, properties, body):
         #Print out everything
-        return ["",str(method.routing_key),str(method.exchange),str(body)]
+        print("Place: ", str(method.exchange))
+        print("Subject: ", str(method.routing_key))
+        print("Message: ", body)
 
     def consume(self,place,subject):
-        self.channel.basic_consume(callback,queue=self.getQueue(place,subject),no_ack=True)
+        self.channel.basic_consume(self.consume_callback,queue=self.getQueue(place,subject),no_ack=True)
         self.start_consuming()
 
 if __name__=="__main__":
-    msg = Messenger()
-    print(msg.getQueue("Squires","Food"))
+    msg1 = Messenger()
+    msg2 = Messenger()
+
+    msg1.produce("Squires","Food","Im Hungry damnit")
+    msg2.consume("Squires","Food")
