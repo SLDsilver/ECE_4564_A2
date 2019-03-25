@@ -46,7 +46,9 @@ class Messenger:
         print("Message: ", str(body))
 
     def consume(self,place,subject):
-        self.channel.basic_consume(self.consume_callback,queue=self.getQueue(place,subject),no_ack=True)
+        self.channel.basic_consume(self.consume_callback,queue=self.getQueue("Squires","Food"),no_ack=True)
+        self.channel.basic_consume(self.consume_callback,queue=self.getQueue("Squires","Rooms"),no_ack=True)
+
         self.channel.start_consuming()
 
 if __name__=="__main__":
@@ -54,6 +56,5 @@ if __name__=="__main__":
     msg2 = Messenger()
 
     msg1.produce("Squires","Food","Im Hungry damnit")
-    msg1.produce("Squires","Room","Embeddi boi")
+    msg1.produce("Squires","Rooms","Embeddi boi")
     msg2.consume("Squires","Food")
-    msg2.consume("Squires","Room")
