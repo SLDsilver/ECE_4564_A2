@@ -40,16 +40,22 @@ class Messenger:
 
     def consume_callback(self, ch, method, properties, body):
         #Print out everything
+        new_thread = False
         place = str(method.exchange)
         subject = str(method.routing_key)
 
         if place != self.prevplace:
             print("\nPlace: ", place)
             self.prevplace = place
+            new_thread = True
         if subject != self.prevsubject:
             print("Subject: ", subject)
             self.prevsubject = subject
-        print("\tMessage: ", body.decode())
+            new_thread = True
+        if new_thread:
+            print("\tMessages: ", body.decode())
+        else:
+            print("\t          ", body.decode())
 
     def consume(self):
         for key, value in self.queue_names.items():
