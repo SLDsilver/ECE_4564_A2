@@ -33,9 +33,6 @@ class Messenger:
                 print("\tBinding Queue: ", key)
                 self.channel.queue_bind(exchange=place,queue=queue_name,routing_key=key)
 
-    def getQueue(self, place, subject):
-        return self.queue_names[place][self.exchanges[place].index(subject)]
-
     def produce(self,place,subject,message):
         self.channel.basic_publish(exchange=place, routing_key=subject, body=message)
 
@@ -45,10 +42,9 @@ class Messenger:
         print("Subject: ", str(method.routing_key))
         print("Message: ", str(body))
 
-    def consume(self,place,subject):
-        self.channel.basic_consume(self.consume_callback,queue=self.getQueue("Squires","Food"),no_ack=True)
-        self.channel.basic_consume(self.consume_callback,queue=self.getQueue("Squires","Rooms"),no_ack=True)
-
+    def consume(self):
+        for key, q in self.queue_names.items():
+            self.channel.basic_consume(self.consume_callback,queue=q,no_ack=True)
         self.channel.start_consuming()
 
 if __name__=="__main__":
@@ -57,4 +53,4 @@ if __name__=="__main__":
 
     msg1.produce("Squires","Food","Im Hungry damnit")
     msg1.produce("Squires","Rooms","Embeddi boi")
-    msg2.consume("Squires","Food")
+    msg2.consume()
