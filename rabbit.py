@@ -16,6 +16,9 @@ class Messenger:
         self.exchanges["Goodwin"] = ["Classrooms","Auditorium"]
         self.exchanges["Library"] = ["Noise","Seating","Wishes"]
         self.queue_names = dict()
+        self.queue_names["Squires"] = []
+        self.queue_names["Goodwin"] = []
+        self.queue_names["Library"] = []
 
         for place in places:
             print("Declaring Exchange: ", place)
