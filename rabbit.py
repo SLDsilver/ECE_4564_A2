@@ -43,9 +43,10 @@ class Messenger:
         print("Message: ", str(body))
 
     def consume(self):
-        for key, q in self.queue_names.items():
-            print(q)
-            self.channel.basic_consume(self.consume_callback,queue=str(q),no_ack=True)
+        for key, value in self.queue_names.items():
+            for q in value:
+                print(q)
+                self.channel.basic_consume(self.consume_callback,queue=str(q),no_ack=True)
         self.channel.start_consuming()
 
 if __name__=="__main__":
