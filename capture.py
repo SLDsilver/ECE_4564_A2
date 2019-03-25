@@ -6,7 +6,7 @@ class Capture:
     def __init__(self,sip='localhost', hashtag="", silent=False):
         self.silent = silent
         self.sip = "".join(sip)
-        self.ht = ht
+        self.ht = hashtag
 
 if __name__ == '__main__':
     parser = ap.ArgumentParser(description="Launch the capture module for Assignemnt 2")
