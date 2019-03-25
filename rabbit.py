@@ -33,20 +33,20 @@ class Messenger:
                 print("\tBinding Queue: ", key)
                 self.channel.queue_bind(exchange=place,queue=queue_name,routing_key=key)
 
-
+    def getQueue(self, place, subject):
+        return self.queue_names[place][self.exchanges[place].index(subject)]
 
     def produce(self,place,subject,message):
-        self.channel.basic_publish(exchange=place,
-                              routing_key=subject,
-                              body=message)
+        self.channel.basic_publish(exchange=place, routing_key=subject, body=message)
 
     def consume_callback(self, ch, method, properties, body):
         #Print out everything
         return ["",str(method.routing_key),str(method.exchange),str(body)]
 
     def consume(self,place,subject):
-        self.channel.basic_consume(callback,queue=self.queue_name,no_ack=True)
+        self.channel.basic_consume(callback,queue=self.getQueue(place,subject),no_ack=True)
         self.start_consuming()
 
 if __name__=="__main__":
     msg = Messenger()
+    print(msg.getQueue("Squires","Food"))
