@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 #ECE4674T18 c:Squires+Wishes
 #ECE4674T18 p:Squires+Wishes “I wish I had gotten their number.”
 
