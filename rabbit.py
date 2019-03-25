@@ -12,9 +12,9 @@ class Messenger:
         #Declare exchanges and queues
         places = ["Squires","Goodwin","Library"]
         self.exchanges = dict()
-        exchanges["Squires"] = ["Food","Meetings","Rooms"]
-        exchanges["Goodwin"] = ["Classrooms","Auditorium"]
-        exchanges["Library"] = ["Noise","Seating","Wishes"]
+        self.exchanges["Squires"] = ["Food","Meetings","Rooms"]
+        self.exchanges["Goodwin"] = ["Classrooms","Auditorium"]
+        self.exchanges["Library"] = ["Noise","Seating","Wishes"]
         self.queue_names = dict()
 
         for place in places:
