@@ -19,11 +19,11 @@ class Messenger:
 
         for place in places:
             print("Declaring Exchange: ", place)
-            self.shannel.exchange_declare(exchange=place,type='direct')
+            self.channel.exchange_declare(exchange=place,exchange_type='direct')
 
             for key in self.exchanges[place]:
                 #declare new quque with name
-                result = channel.queue_declare(exclusive=True)
+                result = self.channel.queue_declare(exclusive=True)
                 queue_name = result.method.queue
                 self.queue_names[place].append(queue_name)
 
