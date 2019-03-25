@@ -20,9 +20,11 @@ redLED = LED(17)
 greenLED = LED(27)
 blueLED = LED(22)
 
-class StdOutListener:
-    def __init__(self,host='localhost',tag='#ECE4564T10',cp=False,StreamListener):
+class Capture:
+    def __init__(self,StreamListener,host='localhost',tag='#ECE4564T10',cp=False):
         self.messenger = rb.Messenger(self.host)
+        self.host = "".join(host)
+        self.hashtag = tag
         self.monitor() #initilize monitering
 
     def on_status(self, status):
@@ -69,7 +71,7 @@ class StdOutListener:
                 self.Place = sub1[0][2:len(sub1[0])] #Place
                 self.Subject = sub1[1] #Subject
 
-            client = MongoClient('localhost', 27017)
+            client = MongoClient(self.host, 27017)
             db = client.team_10
             post = {}
 
@@ -108,12 +110,17 @@ class StdOutListener:
 
         return
 
-    def monitor(self):
-        while True:
-            try:
-                stream.filter(track=["#ECE4674T10"])
-            except:
-                continue
+def monitor(listener):
+    l = listener
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    stream = Stream(auth, l)
+
+    while True:
+        try:
+            stream.filter(track=[self.hashtag])
+        except:
+            continue
 
 if __name__ == '__main__':
     parser = ap.ArgumentParser(description="Launch the capture module for Assignemnt 2")
@@ -124,14 +131,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    l = StdOutListener()
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    stream = Stream(auth, l)
-
     redLED.on()
     greenLED.on()
     blueLED.on()
 
-
     capture = Capture(host=args.IP,tag=args.hashtag,cp=args.silent)
+
+    monitor(capture)
