@@ -6,6 +6,8 @@ class Messenger:
     def __init__(self,host='localhost'):
         #Set host
         self.host = host
+        self.prevplace = ''
+        self.prevsubject = ''
         #Instantiate rabbitmq connection and channel
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
         self.channel = self.connection.channel()
@@ -38,9 +40,16 @@ class Messenger:
 
     def consume_callback(self, ch, method, properties, body):
         #Print out everything
-        print("Place: ", str(method.exchange))
-        print("Subject: ", str(method.routing_key))
-        print("Message: ", str(body.decode()))
+        place = str(method.exchange)
+        subject = str(method.routing_key)
+
+        if place != self.prevplace:
+            print("\nPlace: ", place)
+            self.prevplace = place
+        if subject != self.prevsubject:
+            print("Subject: ", subject)
+            self.prevsubject = subject
+        print("\tMessage: ", body.decode())
 
     def consume(self):
         for key, value in self.queue_names.items():
