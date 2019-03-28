@@ -79,9 +79,8 @@ class Messenger:
             print("\t          ", body.decode())
 
     def consume(self,place,subject):
-        self.prevtag = subject
         self.channel.basic_cancel(self.prevtag)
-        self.channel.basic_consume(self.consume_callback,queue=subject,no_ack=True)
+        self.prevtag =  self.channel.basic_consume(self.consume_callback,queue=subject,no_ack=True)
         #self.channel.start_consuming()
 
 if __name__=="__main__":
@@ -90,4 +89,4 @@ if __name__=="__main__":
     msg1.produce("Squires","Food","Im Hungry damnit")
     msg1.produce("Squires","Rooms","Embeddi boi")
     msg1.produce("Goodwin","Classrooms","Diffeq HW Due?")
-    msg1.produce("Squires","Rooms","Consume Request")
+    msg1.produce("Squires","Food","Consume Request")
