@@ -79,6 +79,7 @@ class Messenger:
             print("\t          ", body.decode())
 
     def consume(self,place,subject):
+        self.prevtag = subject
         self.channel.basic_cancel(self.prevtag)
         self.channel.basic_consume(self.consume_callback,queue=subject,no_ack=True)
         #self.channel.start_consuming()
