@@ -33,20 +33,21 @@ class Messenger:
 
             self.channel.queue_bind(exchange="Consume_Requests",queue=self.info_exchange,routing_key="Key")
             self.channel.basic_consume(self.info_callback,queue=self.info_exchange,no_ack=True)
-            self.channel.start_consuming()
-        else:
+            
             for place in places:
                 #print("Declaring Exchange: ", place)
                 self.channel.exchange_declare(exchange=place,exchange_type='direct')
 
                 for key in self.exchanges[place]:
                     #declare new quque with name
-                    #result = self.channel.queue_declare(exclusive=True)
+                    self.channel.queue_declare(exclusive=True,queue=key)
                     queue_name = key#result.method.queue
                     self.queue_names[place].append(queue_name)
 
                     #print("\tBinding Queue: ", key)
                     self.channel.queue_bind(exchange=place,queue=queue_name,routing_key=key)
+            
+            self.channel.start_consuming()
 
     def produce(self,place,subject,message):
         if(message == "Consume Request"):
