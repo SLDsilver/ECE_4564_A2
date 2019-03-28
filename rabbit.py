@@ -21,9 +21,9 @@ class Messenger:
         self.exchanges["Goodwin"] = ["Classrooms","Auditorium"]
         self.exchanges["Library"] = ["Noise","Seating","Wishes"]
         self.queue_names = dict()
-        self.queue_names["Squires"] = []
-        self.queue_names["Goodwin"] = []
-        self.queue_names["Library"] = []
+        self.queue_names["Squires"] = ["Food","Meetings","Rooms"]
+        self.queue_names["Goodwin"] = ["Classrooms","Auditorium"]
+        self.queue_names["Library"] = ["Noise","Seating","Wishes"]
         self.info_exchange = ''
 
         if version == 'r':
@@ -33,7 +33,7 @@ class Messenger:
 
             self.channel.queue_bind(exchange="Consume_Requests",queue=self.info_exchange,routing_key="Key")
             self.channel.basic_consume(self.info_callback,queue=self.info_exchange,no_ack=True)
-            
+
             for place in places:
                 #print("Declaring Exchange: ", place)
                 self.channel.exchange_declare(exchange=place,exchange_type='direct')
@@ -42,11 +42,10 @@ class Messenger:
                     #declare new quque with name
                     self.channel.queue_declare(exclusive=True,queue=key)
                     queue_name = key#result.method.queue
-                    self.queue_names[place].append(queue_name)
 
                     #print("\tBinding Queue: ", key)
                     self.channel.queue_bind(exchange=place,queue=queue_name,routing_key=key)
-            
+
             self.channel.start_consuming()
 
     def produce(self,place,subject,message):
@@ -55,9 +54,6 @@ class Messenger:
             self.channel.basic_publish(exchange="Consume_Requests", routing_key="Key", body=new_body)
         else:
             self.channel.basic_publish(exchange=place, routing_key=subject, body=message)
-
-    def getQueue(self,place,subject):
-        return self.queue_names[place][self.exchanges[place].index(subject)]
 
     def info_callback(self, ch, method, properties, body):
         info = body.split()
@@ -83,10 +79,9 @@ class Messenger:
             print("\t          ", body.decode())
 
     def consume(self,place,subject):
-        self.prevtag = self.getQueue(place,subject)
         self.channel.basic_cancel(self.prevtag)
-        self.channel.basic_consume(self.consume_callback,queue=self.getQueue(place,subject),no_ack=True)
-        self.channel.start_consuming()
+        self.channel.basic_consume(self.consume_callback,queue=subject,no_ack=True)
+        #self.channel.start_consuming()
 
 if __name__=="__main__":
     msg1 = Messenger(host='192.168.1.104')
@@ -94,4 +89,4 @@ if __name__=="__main__":
     msg1.produce("Squires","Food","Im Hungry damnit")
     msg1.produce("Squires","Rooms","Embeddi boi")
     msg1.produce("Goodwin","Classrooms","Diffeq HW Due?")
-    msg1.produce("Squires","Food","Consume Request")
+    msg1.produce("Squires","Rooms","Consume Request")
