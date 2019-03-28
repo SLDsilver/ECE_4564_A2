@@ -41,8 +41,8 @@ class Messenger:
 
                 for key in self.exchanges[place]:
                     #declare new quque with name
-                    result = self.channel.queue_declare(exclusive=True)
-                    queue_name = result.method.queue
+                    #result = self.channel.queue_declare(exclusive=True)
+                    queue_name = key#result.method.queue
                     self.queue_names[place].append(queue_name)
 
                     #print("\tBinding Queue: ", key)
@@ -60,7 +60,7 @@ class Messenger:
 
     def info_callback(self, ch, method, properties, body):
         info = body.split()
-        self.consume(info[0],info[1])
+        self.consume(info[0].decode(),info[1].decode())
 
     def consume_callback(self, ch, method, properties, body):
         #Print out everything
@@ -89,9 +89,8 @@ class Messenger:
 
 if __name__=="__main__":
     msg1 = Messenger(host='192.168.1.104')
-    msg2 = Messenger(host='192.168.1.104')
 
     msg1.produce("Squires","Food","Im Hungry damnit")
     msg1.produce("Squires","Rooms","Embeddi boi")
     msg1.produce("Goodwin","Classrooms","Diffeq HW Due?")
-    msg2.consume("Squires","Food")
+    msg1.produce("Squires","Food","Consume Request")
