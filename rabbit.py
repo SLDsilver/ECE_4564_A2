@@ -32,7 +32,7 @@ class Messenger:
             self.channel.queue_bind(exchange="Consume_Requests",queue=self.info_exchange,routing_key="Key")
 
             self.channel.queue_bind(exchange="Consume_Requests",queue=self.info_exchange,routing_key="Key")
-            self.channel.basic_consume(self.info_callback,queue=self.getQueue(place,subject),no_ack=True)
+            self.channel.basic_consume(self.info_callback,queue=self.info_exchange,no_ack=True)
             self.channel.start_consuming()
         else:
             for place in places:
