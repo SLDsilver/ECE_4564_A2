@@ -7,8 +7,7 @@ class Repository:
     def __init__(self,silent=False):
         self.silent = silent
         self.tmp = "tmp"
-        self.messenger = rb.Messenger()
-        self.messenger.consume()
+        self.messenger = rb.Messenger(version='r')
 
 if __name__ == '__main__':
     parser = ap.ArgumentParser(description="Launch the repository module for Assignemnt 2")

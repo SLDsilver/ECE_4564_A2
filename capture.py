@@ -84,7 +84,7 @@ class Capture(StreamListener):
                     "Subject": self.Subject,
                     "Message": self.Message
                     }
-                message = "Produce Request: " + self.Message
+                self.messenger.produce(self.Place,self.Subject,self.Message)
                 greenLED.off()
                 blueLED.off()
                 time.sleep(1)
@@ -95,7 +95,7 @@ class Capture(StreamListener):
                     "msgID": "10$" + str(time.time()),
                     "Subject": self.Subject
                     }
-                message = "Consume Request"
+                self.messenger.produce(self.Place,self.Subject,"Consume Request")
                 redLED.off()
                 blueLED.off()
                 time.sleep(1)
@@ -103,7 +103,7 @@ class Capture(StreamListener):
             if post:
                 posts = db.posts
                 post_id = posts.insert_one(post).inserted_id
-                self.messenger.produce(self.Place,self.Subject,message)
+
 
         redLED.on()
         greenLED.on()
