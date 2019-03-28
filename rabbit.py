@@ -84,9 +84,10 @@ class Messenger:
         #self.channel.start_consuming()
 
 if __name__=="__main__":
+    #This will never be called it is for testing
     msg1 = Messenger(host='192.168.1.104')
 
-    msg1.produce("Squires","Food","Im Hungry damnit")
+    msg1.produce("Squires","Food","Im Hungry")
     msg1.produce("Squires","Rooms","Embeddi boi")
-    msg1.produce("Goodwin","Classrooms","Diffeq HW Due?")
-    msg1.produce("Squires","Food","Consume Request")
+    msg1.produce("Goodwin","Classrooms","Diffeq Here")
+    msg1.produce("Goodwin","Auditorium","Consume Request")
