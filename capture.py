@@ -1,12 +1,3 @@
-#ECE4674T10 c:Squires+Wishes
-#ECE4674T10 p:Squires+Wishes “I wish I had gotten their number.”
-
-#p:Squires+Wishes #ECE4674T10 “I wish I had gotten their number.”
-#p:Squires+Wishes “I wish I had gotten their number.” #ECE4674T10"
-
-#c:Squires+Wishes #ECE4674T10
-
-#Import the necessary methods from tweepy library
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -35,6 +26,7 @@ class Capture(StreamListener):
         self.Message = ''
 
         if not 'RT @' in status.text:
+            if self.cp: print("[Checkpoint] Tweet Captured: ", status.text)
             First = status.text.split()
             if First[0][0] == '#':
                 if len(First) == 2:
@@ -74,6 +66,9 @@ class Capture(StreamListener):
 
             client = MongoClient(self.host, 27017)
             db = client.team_10
+            if (self.Place == "Squires"): db = client.Squires
+            elif (self.Place == "Goodwin"): db = client.Goodwin
+            elif (self.Place == "Library"): db = client.Library
             post = {}
 
             if (self.Action == "p"):
@@ -85,8 +80,10 @@ class Capture(StreamListener):
                     "Message": self.Message
                     }
                 self.messenger.produce(self.Place,self.Subject,self.Message)
+                if self.cp: print("[Checkpoint] Produce Request Placed in RabbitMQ Queue")
                 greenLED.off()
                 blueLED.off()
+                if self.cp: print("[Checkpoint] LED Changed to RED")
                 time.sleep(1)
             elif (self.Action == "c"):
                 post = {
@@ -96,18 +93,30 @@ class Capture(StreamListener):
                     "Subject": self.Subject
                     }
                 self.messenger.produce(self.Place,self.Subject,"Consume Request")
+                if self.cp: print("[Checkpoint] Consume Request Placed in RabbitMQ Queue")
                 redLED.off()
                 blueLED.off()
+                if self.cp: print("[Checkpoint] LED Changed to GREEN")
                 time.sleep(1)
 
             if post:
                 posts = db.posts
+                if (self.Subject == "Food"): posts = db.Food
+                elif (self.Subject == "Meetings"): posts = db.Meetings
+                elif (self.Subject == "Rooms"): posts = db.Rooms
+                elif (self.Subject == "Classrooms"): posts = db.Classrooms
+                elif (self.Subject == "Auditorium"): posts = db.Auditorium
+                elif (self.Subject == "Noise"): posts = db.Noise
+                elif (self.Subject == "Seating"): posts = db.Seating
+                elif (self.Subject == "Wishes"): posts = db.Wishes
                 post_id = posts.insert_one(post).inserted_id
+                if self.cp: print("[Checkpoint] Command Stored in MongoDB: ", post)
 
 
         redLED.on()
         greenLED.on()
         blueLED.on()
+        if self.cp: print("[Checkpoint] LED Changed to WHITE")
 
         return
 

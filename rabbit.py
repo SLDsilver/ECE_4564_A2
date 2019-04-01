@@ -49,6 +49,7 @@ class Messenger:
             self.channel.start_consuming()
 
     def produce(self,place,subject,message):
+        print("[Checkpoint] Produce Request Recieved in RabbitMQ Queue")
         if(message == "Consume Request"):
             new_body = place + " " + subject
             self.channel.basic_publish(exchange="Consume_Requests", routing_key="Key", body=new_body)
@@ -79,6 +80,7 @@ class Messenger:
             print("\t          ", body.decode())
 
     def consume(self,place,subject):
+        print("[Checkpoint] Consume Request Recieved in RabbitMQ Queue")
         self.channel.basic_cancel(self.prevtag)
         self.prevtag =  self.channel.basic_consume(self.consume_callback,queue=subject,no_ack=True)
         #self.channel.start_consuming()
